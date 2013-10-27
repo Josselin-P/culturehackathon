@@ -1,0 +1,24 @@
+<h1>datasets #dataculture #hackathon</h1>
+<table>
+	<thead>
+		<tr>
+			<th>Titre</th>
+			<th>Période couverte</th>
+			<th>Fichier</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @datasetsInfo.each do |dataset| %>
+			<tr>
+				<th><%= dataset.title %></th>
+				<th><%= dataset.period[:start_date] + ' - ' + dataset.period[:end_date] %></th>
+				<th><a href='<%= dataset.download_link %>'>Télécharger</a></th>
+			</tr>
+		<% end %>
+	</tbody>
+</table>	
+<ul>
+	<% for i in 1..@page_count do %>
+		<li><a href='?page=<%= i %><'><%= i %></a></li>
+	<% end %>
+</ul>

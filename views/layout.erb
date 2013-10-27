@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel='stylesheet' href='//cdn.jsdelivr.net/foundation/4.3.2/css/foundation.min.css'>
+<title>Metahack</title>
+</head>
+<body>
+<div class='row'>
+  <div class='large-12 columns'>
+    <ul>
+      <li>
+        <% OBJET_DATASET.each do |d| %>
+          <%= d.FOO %> 
+          <%= d.BAR %> 
+        <% end %>
+	<a href='<%= d.HREF %>'><%= d.TITLE %></a>
+      </li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
