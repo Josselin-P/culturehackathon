@@ -10,7 +10,7 @@ require 'csv'
 Bundler.require
 
 class Dataset
-	attr_accessor :title, :publication_date, :producer, :period, :creation_date, :periodicity, :licence, :lang, :keywords, :download_link
+	attr_accessor :id, :title, :publication_date, :producer, :period, :creation_date, :periodicity, :licence, :lang, :keywords, :download_link
 
 	def to_json
 		{:title => @title}.to_json
@@ -31,6 +31,7 @@ for i in 1..3
 			dataset = Dataset.new
 			#binding.pry
 			datasetPage = Nokogiri::HTML(open('http://www.data.gouv.fr' + link['href']))
+			dataset.id = datasetsInfo.length+1
 			dataset.title = datasetPage.css('.museo h1').text.strip
 			dataset.publication_date =  datasetPage.css('.publi time').first.attributes['datetime'].value
 			dataset.producer =  datasetPage.css('.rechResul_ty_donProducteur a').last.text.strip
@@ -62,10 +63,37 @@ get '/'  do
 	#binding.pry
 	@page_count = (datasetsInfo.length.to_f / record_per_page).ceil
 	@page = params[:page] || 1
-	@datasetsInfo = datasetsInfo.drop((@page-1)*record_per_page).take(record_per_page)
+	@datasetsInfo = datasetsInfo.drop((@page.to_i-1)*record_per_page).take(record_per_page)
 	respond_to do |format|
 	    format.json { '{' + @datasetsInfo.map {|dataset| dataset.to_json }.join(',') + '}' }
 	    format.html { erb :index }
+	end
+end
+
+get '/datasets/:id' do
+	@dataset = datasetsInfo[params[:id].to_i-1]
+	if @dataset.download_link[-3..-1] = 'csv'
+		File.new('data_fixed.csv', 'w').write(File.read('data.csv').force_encoding("ISO8859-1").gsub(/"/, "'"))
+		count_tab = CSV.read('data_fixed.csv', col_sep: "\t", encoding: "ISO8859-1")[0].count
+		count_comma = CSV.read('data_fixed.csv', col_sep: ",", encoding: "ISO8859-1")[0].count
+		count_semco = CSV.read('data_fixed.csv', col_sep: ";", encoding: "ISO8859-1")[0].count
+		if count_semco >= count_comma && count_semco > count_tab
+			SEPARATOR = ';'
+		elsif count_comma > count_tab
+			SEPARATOR = ','
+		else
+			SEPARATOR = "\t"
+		end
+		#binding.pry
+		headers = CSV.read('data_fixed.csv', col_sep: SEPARATOR, encoding: "ISO8859-1")[0]
+
+		a = Array.new
+		CSV.read('data_fixed.csv', col_sep: SEPARATOR, encoding: "ISO8859-1").drop(1).each do |row|
+			a.push Hash[headers.zip(row)]
+		end
+	end
+	respond_to do |format|
+		format.html {erb :dataset}
 	end
 end
 

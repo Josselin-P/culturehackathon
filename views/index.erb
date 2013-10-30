@@ -2,6 +2,7 @@
 <table>
 	<thead>
 		<tr>
+			<th>ID</th>
 			<th>Titre</th>
 			<th>Période couverte</th>
 			<th>Fichier</th>
@@ -10,7 +11,8 @@
 	<tbody>
 		<% @datasetsInfo.each do |dataset| %>
 			<tr>
-				<th><%= dataset.title %></th>
+				<th><%= dataset.id %></th>
+				<th><a href='./datasets/<%= dataset.id %>'><%= dataset.title %></a></th>
 				<th><%= dataset.period[:start_date] + ' - ' + dataset.period[:end_date] %></th>
 				<th><a href='<%= dataset.download_link %>'>Télécharger</a></th>
 			</tr>
@@ -19,6 +21,6 @@
 </table>	
 <ul>
 	<% for i in 1..@page_count do %>
-		<li><a href='?page=<%= i %><'><%= i %></a></li>
+		<li><a href='?page=<%= i %>'><%= i %></a></li>
 	<% end %>
 </ul>

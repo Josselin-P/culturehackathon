@@ -1,0 +1,15 @@
+<h1>datasets #dataculture #hackathon</h1>
+<h2><%= @dataset.title %></h2>
+
+<ul>
+	<li>ID : <%= @dataset.id %></li>
+	<li>Date de publication : <%= @dataset.publication_date %></li>
+	<li>Producteur : <%= @dataset.producer %></li>
+	<li>Période : <%= @dataset.period[:start_date] %> - <%= @dataset.period[:end_date] %></li>
+	<li>Date de création : <%= @dataset.creation_date %></li>
+	<li>Périodicité : <%= @dataset.periodicity %></li>
+	<li>Licence : <%= @dataset.licence %></li>
+	<li>Langue : <%= @dataset.lang %></li>
+	<li>Mots clés : <%= @dataset.keywords.join(', ') %></li>
+	<li>Extension fichier : <%= @dataset.download_link[-3..-1] %></li>
+</ul>
